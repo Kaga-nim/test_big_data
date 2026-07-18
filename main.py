@@ -3,15 +3,23 @@ from pydantic import BaseModel
 import pyodbc
 import pandas as pd
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = FastAPI()
 
-# Koneksi ke SQL Server
+# Koneksi ke SQL Server (konfigurasi dari file .env)
+DB_DRIVER = os.getenv("DB_DRIVER", "ODBC Driver 17 for SQL Server")
+DB_SERVER = os.getenv("DB_SERVER", "localhost\\SQLEXPRESS")
+DB_NAME = os.getenv("DB_NAME", "project_db")
+DB_TRUSTED = os.getenv("DB_TRUSTED_CONNECTION", "yes")
+
 conn_str = (
-    "Driver={ODBC Driver 17 for SQL Server};"
-    "Server=KAGA-NIM\\SQLEXPRESS;"
-    "Database=project_db;"
-    "Trusted_Connection=yes;"
+    f"Driver={{{DB_DRIVER}}};"
+    f"Server={DB_SERVER};"
+    f"Database={DB_NAME};"
+    f"Trusted_Connection={DB_TRUSTED};"
 )
 conn = pyodbc.connect(conn_str)
 cursor = conn.cursor()
